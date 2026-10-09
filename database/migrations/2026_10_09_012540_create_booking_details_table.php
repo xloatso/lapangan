@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('courts_id');
             $table->time('start_time');
             $table->Integer('duration_hours');
-            $table->Integer('subtotal');
+            $table->Integer('subtotald');
             $table->timestamps();
         });
     }
