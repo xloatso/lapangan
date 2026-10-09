@@ -12,7 +12,7 @@ class CourtsController extends Controller
      */
     public function index()
     {
-        //
+        $courts = courts::latest()->paginate(12);
     }
 
     /**

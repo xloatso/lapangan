@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('customer_phone', 25);
             $table->date('booking_date');
             $table->integer('total_price');
-             $table->enum('status', ['Pending', 'Lunas', 'Batal'])->default('Pending');
-
+            $table->enum('status', ['Pending', 'Lunas', 'Batal'])->default('Pending');
             $table->timestamps();
         });
     }
