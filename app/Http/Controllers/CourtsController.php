@@ -12,7 +12,9 @@ class CourtsController extends Controller
      */
     public function index()
     {
-        $courts = courts::latest()->paginate(12);
+        $courts = Courts::latest()->paginate(12);
+
+        return view('admin.courts.index', compact('courts'));
     }
 
     /**
@@ -20,7 +22,7 @@ class CourtsController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.courts.create');
     }
 
     /**
@@ -28,7 +30,35 @@ class CourtsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        request()->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:futsal,badminton,basket,voli',
+            'price_per_hour' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+  
+
+         $imagePath = null;
+
+        if ($request->hasFile('image')) {
+
+            $imagePath = $request->file('image')->store('courts', 'public');
+        }
+            Courts::create([
+            'name'        => $request->name,
+
+            'type'    => $request->type,
+
+            'price_per_hour'       => $request->price_per_hour,
+
+            'description' => $request->description,
+
+            'image'       => $imagePath,
+        ]);
+
+        return redirect()->route('courts.index')
+            ->with('success', 'Data lapangan berhasil ditambahkan!');
     }
 
     /**
@@ -36,7 +66,7 @@ class CourtsController extends Controller
      */
     public function show(Courts $courts)
     {
-        //
+
     }
 
     /**
@@ -44,7 +74,7 @@ class CourtsController extends Controller
      */
     public function edit(Courts $courts)
     {
-        //
+        return view('admin.courts.edit', compact('courts'));
     }
 
     /**
@@ -52,7 +82,46 @@ class CourtsController extends Controller
      */
     public function update(Request $request, Courts $courts)
     {
-        //
+        $request->validate([
+
+            'name'        => 'required|string|max:255',
+
+            'type'    => 'required|in:futsal,badminton,basket,voli',
+
+            'price_per_hour'       => 'required|numeric|min:0',
+
+            'description' => 'required|string',
+
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $imagePath = $courts->image;
+
+        if ($request->hasFile('image')) {
+
+            if ($courts->image && Storage::disk('public')->exists($courts->image)) {
+
+                Storage::disk('public')->delete($courts->image);
+            }
+
+            $imagePath = $request->file('image')->store('courts', 'public');
+        }
+
+        $courts->update([
+
+            'name'        => $request->name,
+
+            'type'    => $request->type,
+
+            'price_per_hour'       => $request->price_per_hour,
+
+            'description' => $request->description,
+
+            'image'       => $imagePath,
+        ]);
+
+        return redirect()->route('courts.index')
+            ->with('success', 'Data lapangan berhasil diperbarui!');
     }
 
     /**
@@ -60,6 +129,14 @@ class CourtsController extends Controller
      */
     public function destroy(Courts $courts)
     {
-        //
+        if ($courts->image && Storage::disk('public')->exists($courts->image)) {
+
+            Storage::disk('public')->delete($courts->image);
+        }
+
+        $courts->delete();
+
+        return redirect()->route('courts.index')
+            ->with('success', 'Data lapangan berhasil dihapus!');
     }
 }
