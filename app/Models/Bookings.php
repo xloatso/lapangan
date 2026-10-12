@@ -2,20 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Booking extends Model
+class Bookings extends Model
 {
-    protected $fillable = ['customer_name', 'customer_phone', 'booking_date', 'total_price', 'status'];
+    use HasFactory;
+
+    // Lindungi id dari pengisian massal, mengikuti pola model maujajan.
+    protected $guarded = ['id'];
 
     protected function casts(): array
     {
         return ['booking_date' => 'date', 'total_price' => 'integer'];
     }
 
-    public function details(): HasMany
+    public function bookingDetails(): HasMany
     {
-        return $this->hasMany(BookingDetail::class);
+        return $this->hasMany(Booking_details::class, 'bookings_id');
     }
 }

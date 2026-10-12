@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Court extends Model
+class Courts extends Model
 {
-    protected $fillable = ['name', 'type', 'price_per_hour', 'description', 'image'];
+    use HasFactory;
+
+    protected $table = 'courts';
+
+    // Lindungi id dari pengisian massal, mengikuti pola model maujajan.
+    protected $guarded = ['id'];
 
     protected function casts(): array
     {
@@ -16,6 +22,6 @@ class Court extends Model
 
     public function details(): HasMany
     {
-        return $this->hasMany(BookingDetail::class);
+        return $this->hasMany(Booking_details::class, 'courts_id');
     }
 }
