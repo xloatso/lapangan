@@ -6,6 +6,7 @@ use App\Http\Controllers\CourtsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BookingsController::class, 'index'])->name('customer.index');
+Route::get('/customer', fn () => redirect()->route('customer.index'));
 Route::get('/checkout', fn () => redirect()->route('customer.index'));
 Route::post('/checkout', [BookingsController::class, 'store'])->middleware('throttle:20,1')->name('customer.checkout');
 Route::middleware('auth')->group(function () {

@@ -13,9 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking_details', function (Blueprint $table) {
-              $table->id();
-            $table->foreignId('bookings_id');
-            $table->foreignId('courts_id');
+            $table->id();
+            $table->foreignId('bookings_id')->constrained('bookings')->cascadeOnDelete();
+            $table->foreignId('courts_id')->constrained('courts')->cascadeOnDelete();
             $table->time('start_time');
             $table->Integer('duration_hours');
             $table->Integer('subtotal');
